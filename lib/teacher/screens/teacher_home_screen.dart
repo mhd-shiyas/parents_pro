@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
+import 'package:parent_pro/teacher/screens/assigned_periods_screen.dart';
 import 'package:parent_pro/teacher/screens/student_list_screen.dart';
+import 'package:parent_pro/teacher/screens/assign_periods_screen.dart';
 import 'package:provider/provider.dart';
 import '../../constants/color_constants.dart';
 import '../controller/teacher_controller.dart';
@@ -70,8 +72,10 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
         }
 
         var teacherData = teacherController.teacherData!;
+        String id = teacherData["id"] ?? '';
         String name = teacherData['name'] ?? 'Unknown';
         String department = teacherData['department'] ?? 'Not specified';
+        String role = teacherData['role'] ?? 'Not specified';
         String imageUrl = teacherData['imageUrl'] ?? '';
 
         return Scaffold(
@@ -112,7 +116,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                           BoxShadow(
                             offset: Offset(2, 3),
                             blurRadius: 10,
-                            color: Colors.grey.withOpacity(0.4),
+                            color: Colors.grey.withOpacity(0.2),
                           )
                         ]),
                     child: Row(
@@ -164,6 +168,55 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                         ]),
                   ),
                 ),
+                SizedBox(
+                  height: 20,
+                ),
+                role == "HOD"
+                    ? InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AssignPeriodsScreen()),
+                          );
+                        },
+                        child: Container(
+                            height: 100,
+                            width: double.infinity,
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: Offset(2, 3),
+                                    blurRadius: 10,
+                                    color: Colors.grey.withOpacity(0.2),
+                                  )
+                                ]),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Assign Teachers",
+                                  style: GoogleFonts.inter(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: ColorConstants.primaryColor,
+                                  ),
+                                ),
+                                Text(
+                                  "(Assign the Teachers to Periods)",
+                                  style: GoogleFonts.inter(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            )),
+                      )
+                    : SizedBox(),
               ],
             ),
           ),
@@ -195,6 +248,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
 
                   items: [
                     BottomNavigationBarItem(
+                      backgroundColor: ColorConstants.primaryColor,
                       icon: Column(
                         children: [
                           HugeIcon(
@@ -224,6 +278,12 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                         label: 'Students'),
                     BottomNavigationBarItem(
                         icon: HugeIcon(
+                          icon: HugeIcons.strokeRoundedAssignments,
+                          color: Colors.white,
+                        ),
+                        label: 'Periods'),
+                    BottomNavigationBarItem(
+                        icon: HugeIcon(
                           icon: HugeIcons.strokeRoundedUser,
                           color: Colors.white,
                         ),
@@ -240,12 +300,22 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => StudentListScreen(
-                              department: "BCA",
+                              department: department,
                             ),
                           ),
                         );
                         break;
                       case 2:
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TeacherAssignedPeriodsScreen(
+                              teacherId: id,
+                            ),
+                          ),
+                        );
+                        break;
+                      case 3:
                         Navigator.push(
                           context,
                           MaterialPageRoute(

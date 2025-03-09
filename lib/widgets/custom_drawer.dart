@@ -28,10 +28,10 @@ class CustomDropdownWidget extends StatelessWidget {
       children: [
         Text(
           hintText,
-          style: GoogleFonts.montserrat(
+          style: GoogleFonts.inter(
             fontSize: 14,
             color: Colors.grey,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.bold,
           ),
         ),
         const SizedBox(height: 4),

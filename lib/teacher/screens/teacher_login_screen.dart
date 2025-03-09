@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:parent_pro/auth/screens/teacher_signup_screen.dart';
+import 'package:parent_pro/teacher/screens/teacher_signup_screen.dart';
 import 'package:parent_pro/dashboard/home/screens/home_screen.dart';
 import 'package:parent_pro/teacher/screens/teacher_home_screen.dart';
 import 'package:parent_pro/widgets/custom_button.dart';

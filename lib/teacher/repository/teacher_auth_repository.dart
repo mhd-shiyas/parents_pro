@@ -17,6 +17,7 @@ class TeacherAuthRepository {
     String password,
     File? image,
     String department,
+    String role,
   ) async {
     try {
       UserCredential userCredential = await _auth
@@ -35,6 +36,7 @@ class TeacherAuthRepository {
         "id": userCredential.user!.uid,
         'name': name,
         'department': department,
+        'role': role,
         'email': email,
         'phone': phone,
         'imageUrl': imageUrl,

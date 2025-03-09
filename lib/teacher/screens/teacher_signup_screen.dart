@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../../constants/color_constants.dart';
 import '../../widgets/custom_textfield.dart';
-import '../controller/auth_controller.dart';
+import '../../auth/controller/auth_controller.dart';
 
 class TeacherSignUpScreen extends StatefulWidget {
   @override
@@ -26,6 +26,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController departmentController = TextEditingController();
   String? selectedDepartment;
+  String? selectedRole;
   File? _image;
 
   bool _isLoading = false;
@@ -42,6 +43,7 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
           email: emailController.text.trim(),
           phone: phoneController.text.trim(),
           department: selectedDepartment!,
+          role: selectedRole!,
           password: passwordController.text.trim(),
           image: _image,
           onSuccess: () {
@@ -131,6 +133,31 @@ class _TeacherSignUpScreenState extends State<TeacherSignUpScreen> {
                   validator: (val) {
                     if (val == null) {
                       return "Select a Grade";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              ButtonTheme(
+                alignedDropdown: true,
+                child: CustomDropdownWidget(
+                  title: "Role",
+                  hintText: "Role",
+                  value: selectedRole,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedRole = value;
+                    });
+                  },
+                  items: Utils.teachersRole
+                      .map(
+                        (e) => DropdownMenuItem(
+                            value: e.value, child: Text(e.label!)),
+                      )
+                      .toList(),
+                  validator: (val) {
+                    if (val == null) {
+                      return "Select a Role";
                     }
                     return null;
                   },

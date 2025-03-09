@@ -15,7 +15,9 @@ class TeacherProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Extract teacher details
     String teacherName = teacherDetails['name'] ?? 'Unknown';
+    String teacherImage = teacherDetails['imageUrl'] ?? 'Unknown';
     String teacherDepartment = teacherDetails['department'] ?? 'Unknown';
+    String teacherRole = teacherDetails['role'] ?? 'Unknown';
     String teacherEmail = teacherDetails['email'] ?? 'Unknown';
     String teacherPhone = teacherDetails['phone'] ?? 'No Bio Available';
 
@@ -28,12 +30,22 @@ class TeacherProfileScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: CircleAvatar(
-                radius: 60,
-                backgroundColor: ColorConstants.primaryColor,
-                child: Text(
-                  teacherName[0], // Display the first letter of the name
-                  style: TextStyle(fontSize: 40, color: Colors.white),
+              child: Container(
+                padding: EdgeInsets.all(2),
+                height: 150,
+                width: 150,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(
+                      width: 2,
+                      color: ColorConstants.primaryColor.withOpacity(0.2),
+                    )),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: Image.network(
+                    teacherImage,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
@@ -58,6 +70,10 @@ class TeacherProfileScreen extends StatelessWidget {
                   ProfileWidget(
                     keyValue: "Department",
                     value: teacherDepartment,
+                  ),
+                  ProfileWidget(
+                    keyValue: "Role",
+                    value: teacherRole,
                   ),
                   SizedBox(height: 16),
                   ProfileWidget(

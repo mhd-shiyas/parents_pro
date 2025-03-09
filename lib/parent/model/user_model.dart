@@ -1,9 +1,9 @@
 class UserModel {
   String? studentId;
-  final String? studentName;
+  String? studentName;
   String? email;
-  final String? phoneNumber;
-  final String? dob;
+  String? phoneNumber;
+  String? dob;
   final String? gender;
   final String? bloodGroup;
   final String? department;
@@ -50,7 +50,7 @@ class UserModel {
   // Convert Firestore document to UserModel
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      studentId: map['student_id'] ?? '',
+      studentId: map['student_id'],
       studentName: map['student_name'] ?? '',
       email: map['email'] ?? '',
       phoneNumber: map['phone_number'] ?? '',

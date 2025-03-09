@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:parent_pro/dashboard/home/screens/home_screen.dart';
 import 'package:parent_pro/teacher/screens/teacher_home_screen.dart';
+import 'package:parent_pro/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../repository/auth_repository.dart';
@@ -14,6 +16,12 @@ class AuthenticationController with ChangeNotifier {
   final FirebaseAuth auth = FirebaseAuth.instance;
   bool _isSignedIn = false;
   bool get isSignedIn => _isSignedIn;
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  String? _uid;
+  String get uid => _uid!;
 
   AuthenticationController() {
     checkSign();
@@ -44,11 +52,37 @@ class AuthenticationController with ChangeNotifier {
       required String phone,
       required String password,
       required String department,
+      required String role,
       required File? image,
       required Function onSuccess}) async {
     await _authRepository.requestTeacherApproval(
-        id, name, email, phone, password, image, department);
+        id, name, email, phone, password, image, department, role);
     onSuccess();
+  }
+
+  Future<void> loginWithEmailPassword({
+    required String email,
+    required String password,
+    required BuildContext context,
+    required Function onSuccess,
+  }) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      _uid = auth.currentUser?.uid;
+      onSuccess();
+
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      showSnackBar(context, e.message.toString());
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 
   Future<void> login(String userType, String email, String password,
@@ -76,4 +110,12 @@ class AuthenticationController with ChangeNotifier {
       (route) => false,
     );
   }
+
+  // Future<void> signOut() async {
+  //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  //   await _firebaseAuth.signOut();
+  //   _isSignedIn = false;
+  //   await sharedPreferences.remove("is_signedin");
+  //   notifyListeners();
+  // }
 }

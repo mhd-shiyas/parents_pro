@@ -5,7 +5,9 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:parent_pro/common/custom_appbar.dart';
 import 'package:parent_pro/constants/color_constants.dart';
 import 'package:parent_pro/teacher/model/student_model.dart';
+import 'package:parent_pro/utils/utils.dart';
 import 'package:parent_pro/widgets/custom_button.dart';
+import 'package:parent_pro/widgets/custom_drawer.dart';
 import 'package:provider/provider.dart';
 
 import '../../widgets/custom_textfield.dart';
@@ -28,7 +30,6 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController _bloodGroupController = TextEditingController();
-  final TextEditingController _departmentController = TextEditingController();
   final TextEditingController _nationalityController = TextEditingController();
   final TextEditingController _religionController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
@@ -48,6 +49,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
   int? _selectedSemester; // Default to 1st Year
   String? _selectedGender;
   DateTime? _selectedAdmissionDate;
+  String? _selectedDepartment;
 
   void _nextPage() {
     if (_currentPage < 2) {
@@ -97,7 +99,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
       dob: _dobController.text.trim(),
       gender: _selectedGender,
       bloodGroup: _bloodGroupController.text.trim(),
-      department: _departmentController.text.trim(),
+      department: _selectedDepartment,
       nationality: _nationalityController.text.trim(),
       religion: _religionController.text.trim(),
       category: _categoryController.text.trim(),
@@ -366,6 +368,28 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                 label: "Admission Year",
                 hint: "Admission Year",
                 controller: _admisssionYearController),
+            CustomDropdownWidget(
+              hintText: "Select Deparment",
+              title: "Select Department",
+              value: _selectedDepartment,
+              onChanged: (value) {
+                setState(() {
+                  _selectedDepartment = value;
+                });
+              },
+              items: Utils.departments
+                  .map((dep) => DropdownMenuItem(
+                        child: Text(dep.label ?? ''),
+                        value: dep.value,
+                      ))
+                  .toList(),
+              validator: (val) {
+                if (val == null) {
+                  return "Select a Semester";
+                }
+                return null;
+              },
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

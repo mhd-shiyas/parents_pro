@@ -30,7 +30,7 @@ class TeacherAuthController with ChangeNotifier {
 
   void checkSign(BuildContext context) async {
     final SharedPreferences data = await SharedPreferences.getInstance();
-    _isSignedIn = data.getBool("is_signedin") ?? false;
+    _isSignedIn = data.getBool("is_teacher_signedin") ?? false;
 
     User? user = _firebaseAuth.currentUser;
     if (user != null) {
@@ -40,7 +40,7 @@ class TeacherAuthController with ChangeNotifier {
       DocumentSnapshot userDoc =
           await _firebaseFirestore.collection('teachers').doc(_uid).get();
 
-      if (userDoc.exists && userDoc['approvel'] == true) {
+      if (userDoc.exists && userDoc['approval'] == true) {
         _isSignedIn = true;
       } else {
         _isSignedIn = false; // User is not approved, force logout
@@ -54,7 +54,7 @@ class TeacherAuthController with ChangeNotifier {
 
   Future setSignIn() async {
     final SharedPreferences s = await SharedPreferences.getInstance();
-    s.setBool("is_signedin", true);
+    s.setBool("is_teacher_signedin", true);
     _isSignedIn = true;
     notifyListeners();
   }
@@ -66,10 +66,19 @@ class TeacherAuthController with ChangeNotifier {
       required String phone,
       required String password,
       required String department,
+      required String role,
       required File? image,
       required Function onSuccess}) async {
     await _authRepository.requestTeacherApproval(
-        id, name, email, phone, password, image, department);
+      id,
+      name,
+      email,
+      phone,
+      password,
+      image,
+      department,
+      role,
+    );
     onSuccess();
   }
 
@@ -90,7 +99,7 @@ class TeacherAuthController with ChangeNotifier {
       DocumentSnapshot userDoc =
           await _firebaseFirestore.collection('teachers').doc(_uid).get();
 
-      if (userDoc.exists && userDoc['approvel'] == true) {
+      if (userDoc.exists && userDoc['approval'] == true) {
         await setSignIn();
         notifyListeners();
       } else {
@@ -109,7 +118,7 @@ class TeacherAuthController with ChangeNotifier {
   Future<void> logoutUser(BuildContext context) async {
     await _firebaseAuth.signOut();
     final SharedPreferences s = await SharedPreferences.getInstance();
-    await s.setBool("is_signedin", false);
+    await s.setBool("is_teacher_signedin", false);
     _isSignedIn = false;
     notifyListeners();
     Navigator.pushAndRemoveUntil(

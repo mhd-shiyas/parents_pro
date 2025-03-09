@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 
 class AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -18,6 +17,7 @@ class AuthRepository {
     String password,
     File? image,
     String department,
+    String role,
   ) async {
     try {
       UserCredential userCredential = await _auth
@@ -36,6 +36,7 @@ class AuthRepository {
         "id": userCredential.user!.uid,
         'name': name,
         'department': department,
+        'role': role,
         'email': email,
         'phone': phone,
         'imageUrl': imageUrl,
@@ -52,7 +53,7 @@ class AuthRepository {
           email: email, password: password);
       DocumentSnapshot userDoc = await _firestore
           .collection('students')
-          .doc(userCredential.user!.uid)
+          .doc(userCredential.user?.uid)
           .get();
       if (!userDoc.exists) {
         throw Exception('User not found');

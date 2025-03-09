@@ -1,29 +1,41 @@
 class Teacher {
-  String id;
-  String name;
-  String email;
-  String phone;
-  String photoUrl;
+  String? id;
+  String? name;
+  String? department;
+  String? role;
+  String? email;
+  String? phone;
+  String? photoUrl;
   bool isApproved;
+  List<Map<String, String>> assignedPeriods; // Store assigned periods
 
   Teacher({
     required this.id,
     required this.name,
+    required this.department,
+    required this.role,
     required this.email,
     required this.phone,
     required this.photoUrl,
-    this.isApproved = false, // Default: Not approved
+    this.isApproved = false,
+    this.assignedPeriods = const [], // Default empty list
   });
 
   // Convert Firestore Document to Teacher Model
-  factory Teacher.fromMap(Map<String, dynamic> data, String documentId) {
+  factory Teacher.fromMap(Map<String, dynamic> data) {
     return Teacher(
-      id: documentId,
+      id: data["id"] ?? '',
       name: data['name'] ?? '',
+      department: data['department'],
+      role: data["role"],
       email: data['email'] ?? '',
       phone: data['phone'] ?? '',
-      photoUrl: data['photoUrl'] ?? '',
+      photoUrl: data['imageUrl'] ?? '',
       isApproved: data['isApproved'] ?? false,
+      assignedPeriods: (data['assigned_periods'] as List<dynamic>?)
+              ?.map((e) => Map<String, String>.from(e as Map))
+              .toList() ??
+          [],
     );
   }
 
@@ -32,9 +44,12 @@ class Teacher {
     return {
       'name': name,
       'email': email,
+      'department': department,
+      'role': role,
       'phone': phone,
-      'photoUrl': photoUrl,
+      'imageUrl': photoUrl,
       'isApproved': isApproved,
+      'assigned_periods': assignedPeriods, // Store assigned periods
     };
   }
 }

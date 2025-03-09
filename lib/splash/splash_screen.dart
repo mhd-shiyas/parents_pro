@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../auth/controller/auth_controller.dart';
 import '../constants/color_constants.dart';
+import '../teacher/controller/teacher_auth_controller.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,39 +23,70 @@ class _SplashScreenState extends State<SplashScreen> {
         .addPostFrameCallback((_) => navigateToNextScreen(context));
   }
 
-  Future<void> navigateToNextScreen(BuildContext context) async {
-    final authProvider =
+  // Future<void> navigateToNextScreen(BuildContext context) async {
+  //   final authProvider =
+  //       Provider.of<AuthenticationController>(context, listen: false);
+
+  //   await Future.delayed(const Duration(seconds: 2));
+
+  //   if (authProvider.isSignedIn) {
+  //     String? userType = await authProvider.getUserType();
+
+  //     if (userType == 'Teacher') {
+  //       Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => TeacherDashboard(
+  //               teacherId: authProvider.auth.currentUser?.uid ?? ''),
+  //         ),
+  //       );
+  //     } else if (userType == 'Parent') {
+  //       Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => HomeScreen(),
+  //         ),
+  //       );
+  //     } else {
+  //       Navigator.pushReplacement(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => UserSelectionScreen(),
+  //         ),
+  //       );
+  //     }
+  //   } else {
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => UserSelectionScreen()),
+  //     );
+  //   }
+  // }
+
+  Future<void> navigateToNextScreen(context) async {
+    final teacherAuthProvider =
+        Provider.of<TeacherAuthController>(context, listen: false);
+    final studentAuthProvider =
         Provider.of<AuthenticationController>(context, listen: false);
 
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
 
-    if (authProvider.isSignedIn) {
-      String? userType = await authProvider.getUserType();
-
-      if (userType == 'Teacher') {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TeacherDashboard(
-                teacherId: authProvider.auth.currentUser?.uid ?? ''),
-          ),
-        );
-      } else if (userType == 'Parent') {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomeScreen(),
-          ),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => UserSelectionScreen(),
-          ),
-        );
-      }
+    if (teacherAuthProvider.isSignedIn) {
+      // Redirect to Teacher Home
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                TeacherDashboard(teacherId: teacherAuthProvider.uid)),
+      );
+    } else if (studentAuthProvider.isSignedIn) {
+      // Redirect to Student Home
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
     } else {
+      // No user is logged in, go to selection screen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => UserSelectionScreen()),

@@ -28,7 +28,8 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<void> fetchInitialData() async {
-    Provider.of<UserController>(context, listen: false).fetchUser(user!.uid);
+    Provider.of<UserController>(context, listen: false)
+        .fetchUser(user?.uid ?? '');
   }
 
   final AuthRepository _authRepository = AuthRepository();

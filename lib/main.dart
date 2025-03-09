@@ -4,10 +4,14 @@ import 'package:parent_pro/auth/controller/auth_controller.dart';
 import 'package:parent_pro/auth/controller/user_controller.dart';
 import 'package:parent_pro/firebase_options.dart';
 import 'package:parent_pro/splash/splash_screen.dart';
+import 'package:parent_pro/teacher/controller/assign_period_controller.dart';
+import 'package:parent_pro/teacher/controller/attendance_controller.dart';
 import 'package:parent_pro/teacher/controller/students_controller.dart';
 import 'package:parent_pro/teacher/controller/teacher_auth_controller.dart';
 import 'package:parent_pro/teacher/controller/teacher_controller.dart';
 import 'package:provider/provider.dart';
+
+import 'dashboard/attendance/controller/students_attendance_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +44,15 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => StudentController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AssignPeriodController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AttendanceController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => StudentsAttendanceController(),
         ),
       ],
       child: MaterialApp(

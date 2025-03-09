@@ -21,6 +21,10 @@ class StudentModel {
   final String? district;
   final String? state;
   final String? pincode;
+  Map<String, Map<int, bool>>
+      attendance; // Stores date-wise attendance with periods
+  int totalPresents;
+  int totalAbsents;
 
   StudentModel({
     required this.studentId,
@@ -45,6 +49,9 @@ class StudentModel {
     required this.district,
     required this.state,
     required this.pincode,
+    this.attendance = const {}, // Default empty attendance
+    this.totalPresents = 0,
+    this.totalAbsents = 0,
   });
 
   // Convert Firestore document to StudentModel
@@ -58,9 +65,11 @@ class StudentModel {
       gender: map['gender'] ?? '',
       bloodGroup: map['blood_group'] ?? '',
       department: map['department'] ?? '',
-      currentSemester: map['current_semester'],
+      currentSemester:
+          int.tryParse(map['current_semester']?.toString() ?? '0') ??
+              0, // Ensure it's an integer
       admissionNumber: map["admission_number"],
-      rollNumber: map['roll_no'],
+      rollNumber: map['roll_no']?.toString() ?? '', // Ensure it's a string
       admisssionYear: map['admission_year'],
       admissionDate: map['admission_date'],
       nationality: map['nationality'] ?? '',
@@ -74,6 +83,7 @@ class StudentModel {
       pincode: map['pincode'] ?? '',
     );
   }
+
   Map<String, dynamic> toMap() {
     return {
       'student_id': studentId,
@@ -98,6 +108,14 @@ class StudentModel {
       'district': district,
       'state': state,
       'pincode': pincode,
+      'attendance': attendance.map(
+        (date, periods) => MapEntry(
+          date,
+          periods.map((period, status) => MapEntry(period.toString(), status)),
+        ),
+      ),
+      'total_presents': totalPresents,
+      'total_absents': totalAbsents,
     };
   }
 }
