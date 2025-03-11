@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:parent_pro/common/custom_appbar.dart';
 import 'package:parent_pro/teacher/screens/attendance_screen.dart';
 import 'package:provider/provider.dart';

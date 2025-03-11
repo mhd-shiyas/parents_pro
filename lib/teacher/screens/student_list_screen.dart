@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:parent_pro/constants/color_constants.dart';
+import 'package:parent_pro/teacher/screens/student_edit_screen.dart';
 import 'package:provider/provider.dart';
 import '../../widgets/custom_textfield.dart';
 import '../controller/students_controller.dart';
@@ -169,7 +170,19 @@ class _StudentListScreenState extends State<StudentListScreen> {
                                       icon: Icon(Icons.edit,
                                           color: ColorConstants.primaryColor),
                                       onPressed: () {
-                                        _editStudent(student);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  StudentEditScreen(
+                                                studentId:
+                                                    student.studentId ?? '',
+                                                // selectedSemester:
+                                                //     student.currentSemester ??
+                                                //         0,
+                                              ),
+                                            ));
+                                        // _editStudent(student);
                                       },
                                     ),
                                   ),

@@ -4,10 +4,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:parent_pro/constants/color_constants.dart';
+import 'package:parent_pro/dashboard/fees/screens/fees_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../auth/controller/auth_controller.dart';
 import '../../../auth/controller/user_controller.dart';
+import '../../assessment/screen/assessment_screen.dart';
 import '../../assignment/screens/assignment_screen.dart';
 import '../../attendance/controller/students_attendance_controller.dart';
 import '../../attendance/screens/attendance_screen.dart';
@@ -245,19 +247,29 @@ class _HomeScreenState extends State<HomeScreen>
                     children: [
                       _buildGridItem(
                           'Assessment',
-                          Colors.cyan,
                           () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => AssignmentScreen(),
+                                builder: (context) => StudentAssessmentsScreen(
+                                  studentId: user?.uid ?? '',
+                                ),
                               ))),
                       _buildGridItem(
                         'Attendance',
-                        Colors.pink,
                         () => Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => AttendanceScreen(
+                                studentId: user?.uid ?? '',
+                              ),
+                            )),
+                      ),
+                      _buildGridItem(
+                        'Fees',
+                        () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FeesScreen(
                                 studentId: user?.uid ?? '',
                               ),
                             )),
@@ -422,21 +434,25 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildGridItem(
     String label,
-    Color color,
     Function()? onTap,
   ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
+        height: 20,
         decoration: BoxDecoration(
-          color: color,
+          color: Colors.white,
+          border: Border.all(
+            width: 2,
+            color: ColorConstants.primaryColor.withOpacity(0.8),
+          ),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Center(
           child: Text(
             label,
             style: TextStyle(
-              color: Colors.white,
+              color: ColorConstants.primaryColor,
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),

@@ -8,6 +8,7 @@ import '../../constants/color_constants.dart';
 import '../controller/attendance_controller.dart';
 import '../controller/students_controller.dart';
 import '../model/student_model.dart';
+import 'add_assessment_screen.dart';
 import 'subject_student_adding_screen.dart';
 
 class AttendanceMarkingScreen extends StatefulWidget {
@@ -305,33 +306,83 @@ class _AttendanceMarkingScreenState extends State<AttendanceMarkingScreen> {
           ),
         ],
       ),
-      floatingActionButton: InkWell(
-        onTap: _navigateToAddStudentsScreen,
-        child: Container(
-          height: 60,
-          width: 180,
-          decoration: BoxDecoration(
-              color: ColorConstants.primaryColor,
-              borderRadius: BorderRadius.circular(16)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              HugeIcon(
-                  icon: HugeIcons.strokeRoundedAddTeam, color: Colors.white),
-              SizedBox(
-                width: 6,
-              ),
-              Text(
-                "Add Students",
-                style: GoogleFonts.inter(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddAssessmentScreen(
+                    subject: widget.subject,
+                    semester: widget.semester,
+                    teacherId: widget.teacherId,
+                    paperCode: widget.paperCode,
+                  ),
                 ),
-              )
-            ],
+              );
+            },
+            child: Container(
+              margin: const EdgeInsets.all(8.0),
+              height: 60,
+              width: 180,
+              decoration: BoxDecoration(
+                  color: ColorConstants.primaryColor,
+                  borderRadius: BorderRadius.circular(16)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  HugeIcon(
+                    icon: HugeIcons.strokeRoundedAdd01,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 6,
+                  ),
+                  Text(
+                    "Add Assessment",
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
-        ),
+          InkWell(
+            onTap: _navigateToAddStudentsScreen,
+            child: Container(
+              margin: const EdgeInsets.all(8.0).copyWith(left: 0),
+              height: 60,
+              width: 160,
+              decoration: BoxDecoration(
+                  color: ColorConstants.primaryColor,
+                  borderRadius: BorderRadius.circular(16)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  HugeIcon(
+                      icon: HugeIcons.strokeRoundedAddTeam,
+                      color: Colors.white),
+                  SizedBox(
+                    width: 6,
+                  ),
+                  Text(
+                    "Add Students",
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
