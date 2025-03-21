@@ -6,7 +6,6 @@ import 'package:parent_pro/common/custom_appbar.dart';
 import 'package:parent_pro/constants/color_constants.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
-
 import '../controller/students_attendance_controller.dart';
 
 class AttendanceScreen extends StatefulWidget {
