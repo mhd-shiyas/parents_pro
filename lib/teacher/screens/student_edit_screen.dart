@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:parent_pro/common/custom_appbar.dart';
+import 'package:parent_pro/constants/color_constants.dart';
+import 'package:parent_pro/widgets/custom_button.dart';
 import 'package:provider/provider.dart';
 import '../controller/assessment_controller.dart';
 import '../controller/students_controller.dart';
@@ -33,7 +37,7 @@ class _StudentEditScreenState extends State<StudentEditScreen>
     if (student != null) {
       setState(() {
         currentSemester = student['current_semester'];
-        currentYear = student['admission_year'];
+        currentYear = student['year'];
       });
     }
   }
@@ -139,7 +143,7 @@ class _StudentEditScreenState extends State<StudentEditScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Student Details")),
+      appBar: CustomAppbar(title: "Student Details"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -152,15 +156,44 @@ class _StudentEditScreenState extends State<StudentEditScreen>
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Admission Year: $currentYear",
-                        style: TextStyle(fontSize: 16)),
+                    Row(
+                      children: [
+                        Text("Admission Year: ",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            )),
+                        Text(currentYear, style: TextStyle(fontSize: 16)),
+                      ],
+                    ),
                     SizedBox(height: 8),
-                    Text("Current Semester: $currentSemester",
-                        style: TextStyle(fontSize: 16)),
+                    Row(
+                      children: [
+                        Text("Current Semester: ",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            )),
+                        Text("$currentSemester",
+                            style: TextStyle(fontSize: 16)),
+                      ],
+                    ),
                   ],
                 ),
                 IconButton(
-                  icon: Icon(Icons.edit),
+                  style: IconButton.styleFrom(
+                      side: BorderSide(
+                          width: 1,
+                          color: ColorConstants.primaryColor.withOpacity(0.5)),
+                      backgroundColor:
+                          ColorConstants.primaryColor.withOpacity(0.2),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15))),
+                  icon: HugeIcon(
+                    icon: HugeIcons.strokeRoundedEdit02,
+                    color: ColorConstants.primaryColor,
+                    size: 18,
+                  ),
                   onPressed: _editStudent,
                 )
               ],
@@ -170,6 +203,14 @@ class _StudentEditScreenState extends State<StudentEditScreen>
 
             // Tab Bar for Assessments & Fees
             TabBar(
+              labelColor: ColorConstants.primaryColor,
+              indicatorColor: ColorConstants.primaryColor,
+              dividerColor: Colors.transparent,
+              padding: EdgeInsets.all(20).copyWith(top: 10),
+              labelStyle: GoogleFonts.inter(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+              ),
               controller: _tabController,
               tabs: [
                 Tab(text: "Assessments"),
@@ -214,13 +255,21 @@ class _StudentEditScreenState extends State<StudentEditScreen>
                 ? assessment['submitted']
                 : false;
 
-            return Card(
-              elevation: 3,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+            return Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(2, 3),
+                      blurRadius: 10,
+                      color: Colors.grey.withOpacity(0.2),
+                    )
+                  ]),
               child: ListTile(
                 title: Text(assessment['name'],
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                    style: GoogleFonts.inter(
+                        fontWeight: FontWeight.bold, fontSize: 16)),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -229,6 +278,7 @@ class _StudentEditScreenState extends State<StudentEditScreen>
                   ],
                 ),
                 trailing: Switch(
+                  activeColor: ColorConstants.primaryColor,
                   value: isSubmitted,
                   onChanged: (value) {
                     Provider.of<AssessmentController>(context, listen: false)
@@ -245,14 +295,18 @@ class _StudentEditScreenState extends State<StudentEditScreen>
     );
   }
 
-  // 📌 Semester Fees Section
-  // 📌 Semester Fees Section
+  //  Semester Fees Section
   Widget _buildFeesSection() {
     return Column(
       children: [
-        ElevatedButton(
-          onPressed: _addSemesterFee,
-          child: Text("Add Semester Fee"),
+        Container(
+          padding: EdgeInsets.all(12),
+          width: double.infinity,
+          child: CustomButton(
+            textSize: 15,
+            onTap: _addSemesterFee,
+            title: "Add Semester Fee",
+          ),
         ),
         Expanded(
             child: Expanded(
@@ -273,6 +327,7 @@ class _StudentEditScreenState extends State<StudentEditScreen>
                 itemBuilder: (context, index) {
                   final fee = fees[index];
                   return Card(
+                    color: Colors.white,
                     child: ListTile(
                         title: Text("Semester ${fee['semester']}"),
                         subtitle: Text("Fee: ${fee['amount']}"),

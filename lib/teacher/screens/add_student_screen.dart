@@ -40,6 +40,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
   final TextEditingController _stateController = TextEditingController();
   final TextEditingController _pincodeController = TextEditingController();
   final TextEditingController _rollNumberController = TextEditingController();
+  final TextEditingController _yearController = TextEditingController();
   final TextEditingController _admissionDateController =
       TextEditingController();
   final TextEditingController _admissionNumberController =
@@ -92,6 +93,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
       email: _emailController.text.trim(),
       phoneNumber: _phoneNumberController.text,
       currentSemester: _selectedSemester,
+      year: _yearController.text.trim(),
       rollNumber: _rollNumberController.text.trim(),
       admissionDate: _selectedAdmissionDate?.toIso8601String() ?? '',
       admissionNumber: _admissionNumberController.text.trim(),
@@ -342,6 +344,8 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                 label: "Roll Number",
                 hint: "Roll Number",
                 controller: _rollNumberController),
+            CustomTextfield(
+                label: "Year", hint: "Year", controller: _yearController),
             CustomTextfield(
                 label: "Admission Number",
                 hint: "Admission Number",

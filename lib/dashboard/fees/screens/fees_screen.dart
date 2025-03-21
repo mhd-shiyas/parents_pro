@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:parent_pro/common/custom_appbar.dart';
 import 'package:provider/provider.dart';
 import '../../../auth/controller/fees_controller.dart';
 
@@ -40,38 +42,65 @@ class _FeesScreenState extends State<FeesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Semester Fees")),
+      backgroundColor: Colors.white,
+      appBar: CustomAppbar(title: "Semester Fees"),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : semesterFees.isEmpty
               ? Center(child: Text("No semester fees added"))
-              : ListView.builder(
-                  itemCount: semesterFees.length,
-                  itemBuilder: (context, index) {
-                    final fee = semesterFees[index];
+              : Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) => SizedBox(
+                      height: 12,
+                    ),
+                    itemCount: semesterFees.length,
+                    itemBuilder: (context, index) {
+                      final fee = semesterFees[index];
 
-                    return Card(
-                      elevation: 4,
-                      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: ListTile(
-                        title: Text("Semester ${fee['semester']}"),
-                        subtitle: Text("Fee: ₹${fee['amount']}"),
-                        trailing: fee['paid'] == true
-                            ? Chip(
-                                label: Text("Paid",
-                                    style: TextStyle(color: Colors.white)),
-                                backgroundColor: Colors.green,
+                      return Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                offset: Offset(2, 3),
+                                blurRadius: 10,
+                                color: Colors.grey.withOpacity(0.2),
                               )
-                            : ElevatedButton(
-                                onPressed: () {
-                                  _feesController.startPayment(
-                                      fee['amount'], widget.studentId, fee['semester']);
-                                },
-                                child: Text("Pay Now"),
-                              ),
-                      ),
-                    );
-                  },
+                            ]),
+                        child: ListTile(
+                          title: Text(
+                            "Semester ${fee['semester']}",
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          subtitle: Text(
+                            "Fee: ₹${fee['amount']}.00",
+                            style: GoogleFonts.inter(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          trailing: fee['paid'] == true
+                              ? Chip(
+                                  label: Text("Paid",
+                                      style: TextStyle(color: Colors.white)),
+                                  backgroundColor: Colors.green,
+                                )
+                              : ElevatedButton(
+                                  onPressed: () {
+                                    _feesController.startPayment(fee['amount'],
+                                        widget.studentId, fee['semester']);
+                                  },
+                                  child: Text("Pay Now"),
+                                ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
     );
   }

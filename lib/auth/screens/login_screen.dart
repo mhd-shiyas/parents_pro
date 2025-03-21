@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       authController
                           .setSignIn()
                           .then((value) => authController.login(
-                                widget.userType,
+                            
                                 emailController.text,
                                 passwordController.text,
                                 context,

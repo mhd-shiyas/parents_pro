@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:parent_pro/constants/color_constants.dart';
+import 'package:parent_pro/widgets/custom_button.dart';
+import 'package:parent_pro/widgets/custom_drawer.dart';
+import 'package:parent_pro/widgets/custom_textfield.dart';
 import 'package:provider/provider.dart';
 import '../controller/assessment_controller.dart';
 
@@ -28,13 +33,21 @@ class _AddAssessmentScreenState extends State<AddAssessmentScreen> {
   bool isLoading = false;
 
   // List of assessment types
-  final List<String> _assessmentTypes = ["Assignment", "Quiz", "Project", "Exam"];
+  final List<String> _assessmentTypes = [
+    "Assignment",
+    "Quiz",
+    "Project",
+    "Exam"
+  ];
 
   void _submitAssessment() async {
-    if (_formKey.currentState!.validate() && _assessmentType != null && _dueDate != null) {
+    if (_formKey.currentState!.validate() &&
+        _assessmentType != null &&
+        _dueDate != null) {
       setState(() => isLoading = true);
 
-      await Provider.of<AssessmentController>(context, listen: false).addAssessment(
+      await Provider.of<AssessmentController>(context, listen: false)
+          .addAssessment(
         teacherId: widget.teacherId,
         subject: widget.subject,
         semester: widget.semester,
@@ -64,26 +77,52 @@ class _AddAssessmentScreenState extends State<AddAssessmentScreen> {
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("Assessment Type", style: TextStyle(fontWeight: FontWeight.bold)),
-              DropdownButtonFormField<String>(
-                value: _assessmentType,
-                items: _assessmentTypes.map((type) {
-                  return DropdownMenuItem(value: type, child: Text(type));
-                }).toList(),
-                onChanged: (value) => setState(() => _assessmentType = value),
-                validator: (value) => value == null ? "Please select an assessment type" : null,
-              ),
-              SizedBox(height: 16),
+              // Text("Assessment Type",
+              //     style: TextStyle(fontWeight: FontWeight.bold)),
+              CustomDropdownWidget(
+                  title: "Assessment Type",
+                  value: _assessmentType,
+                  onChanged: (value) => setState(() => _assessmentType = value),
+                  items: _assessmentTypes.map((type) {
+                    return DropdownMenuItem(value: type, child: Text(type));
+                  }).toList(),
+                  validator: (value) => value == null
+                      ? "Please select an assessment type"
+                      : null),
+              // DropdownButtonFormField<String>(
 
-              TextFormField(
-                decoration: InputDecoration(labelText: "Assessment Name"),
+              //   value: _assessmentType,
+              //   items: _assessmentTypes.map((type) {
+              //     return DropdownMenuItem(value: type, child: Text(type));
+              //   }).toList(),
+              //   onChanged: (value) => setState(() => _assessmentType = value),
+              //   validator: ,
+              // ),
+              // SizedBox(height: 16),
+              CustomTextfield(
+                label: "",
+                hint: "Assessment Name",
                 onChanged: (value) => _assessmentName = value,
-                validator: (value) => value == null || value.isEmpty ? "Enter assessment name" : null,
               ),
-              SizedBox(height: 16),
 
-              Text("Due Date", style: TextStyle(fontWeight: FontWeight.bold)),
+              // TextFormField(
+              //   decoration: InputDecoration(labelText: "Assessment Name"),
+              //   onChanged: (value) => _assessmentName = value,
+              //   validator: (value) => value == null || value.isEmpty
+              //       ? "Enter assessment name"
+              //       : null,
+              // ),
+              // SizedBox(height: 16),
+
+              Text(
+                "Due Date",
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               InkWell(
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
@@ -102,15 +141,28 @@ class _AddAssessmentScreenState extends State<AddAssessmentScreen> {
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(_dueDate == null ? "Select Due Date" : "${_dueDate!.toLocal()}".split(' ')[0]),
+                  child: Text(
+                    _dueDate == null
+                        ? "Select Due Date"
+                        : "${_dueDate!.toLocal()}".split(' ')[0],
+                  ),
                 ),
               ),
               SizedBox(height: 24),
-
-              ElevatedButton(
-                onPressed: isLoading ? null : _submitAssessment,
-                child: isLoading ? CircularProgressIndicator() : Text("Add Assessment"),
-              ),
+              isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(
+                      color: ColorConstants.primaryColor,
+                    ))
+                  : Container(
+                      padding: EdgeInsets.all(12),
+                      width: double.infinity,
+                      child: CustomButton(
+                        textSize: 16,
+                        title: "Add Assessment",
+                        onTap: isLoading ? null : _submitAssessment,
+                      ),
+                    ),
             ],
           ),
         ),

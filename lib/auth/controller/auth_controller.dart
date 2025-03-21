@@ -1,10 +1,8 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:parent_pro/dashboard/home/screens/home_screen.dart';
-import 'package:parent_pro/teacher/screens/teacher_home_screen.dart';
 import 'package:parent_pro/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,11 +36,6 @@ class AuthenticationController with ChangeNotifier {
     s.setBool("is_signedin", true);
     _isSignedIn = true;
     notifyListeners();
-  }
-
-  Future<String?> getUserType() async {
-    final SharedPreferences s = await SharedPreferences.getInstance();
-    return s.getString("user_type");
   }
 
   Future<void> registerTeacher(
@@ -85,8 +78,8 @@ class AuthenticationController with ChangeNotifier {
     }
   }
 
-  Future<void> login(String userType, String email, String password,
-      BuildContext context) async {
+  Future<void> login(
+      String email, String password, BuildContext context) async {
     await _authRepository.login(email, password);
     Navigator.pushReplacement(
         context,
