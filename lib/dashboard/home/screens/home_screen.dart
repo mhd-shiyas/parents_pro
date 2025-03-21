@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:parent_pro/auth/controller/department_details_controller.dart';
@@ -10,7 +9,6 @@ import 'package:parent_pro/dashboard/fees/screens/fees_screen.dart';
 import 'package:parent_pro/dashboard/profile/screens/profile_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../../auth/controller/auth_controller.dart';
 import '../../../auth/controller/user_controller.dart';
 import '../../assessment/screen/assessment_screen.dart';
 import '../../attendance/controller/students_attendance_controller.dart';
@@ -50,14 +48,14 @@ class _HomeScreenState extends State<HomeScreen>
       //  DateTime today = DateTime.now();
 
       print(
-          "📢 Fetching Today's Attendance for Student ID: ${userController.user?.studentId}");
+          "Fetching Today's Attendance for Student ID: ${userController.user?.studentId}");
 
       Map<int, bool?> fetchedAttendance =
           await attendanceController.fetchTodaysAttendance(
         userController.user?.studentId ?? '',
       );
 
-      print("🎯 Final Attendance Data for Home Screen: $fetchedAttendance");
+      print("Final Attendance Data for Home Screen: $fetchedAttendance");
 
       setState(() {
         attendanceStatus = fetchedAttendance;
