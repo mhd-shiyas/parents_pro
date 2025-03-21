@@ -8,6 +8,7 @@ class StudentModel {
   final String? bloodGroup;
   final String? department;
   final int? currentSemester;
+  final String? year;
   final String? admissionNumber;
   final String? rollNumber;
   final String? admisssionYear;
@@ -23,19 +24,20 @@ class StudentModel {
   final String? pincode;
   Map<String, Map<int, bool>>
       attendance; // Stores date-wise attendance with periods
-  int totalPresents;
-  int totalAbsents;
+  int? totalPresents;
+  int? totalAbsents;
 
   StudentModel({
-    required this.studentId,
-    required this.studentName,
-    required this.email,
-    required this.phoneNumber,
-    required this.dob,
-    required this.gender,
-    required this.bloodGroup,
-    required this.department,
-    required this.currentSemester,
+     this.studentId,
+     this.studentName,
+     this.email,
+     this.phoneNumber,
+     this.dob,
+     this.gender,
+     this.bloodGroup,
+     this.department,
+     this.currentSemester,
+    required this.year,
     required this.admissionNumber,
     required this.rollNumber,
     required this.admisssionYear,
@@ -68,6 +70,7 @@ class StudentModel {
       currentSemester:
           int.tryParse(map['current_semester']?.toString() ?? '0') ??
               0, // Ensure it's an integer
+      year: map['year'],
       admissionNumber: map["admission_number"],
       rollNumber: map['roll_no']?.toString() ?? '', // Ensure it's a string
       admisssionYear: map['admission_year'],
@@ -95,6 +98,7 @@ class StudentModel {
       'blood_group': bloodGroup,
       'department': department,
       'current_semester': currentSemester,
+      'year': year,
       'admission_number': admissionNumber,
       'roll_no': rollNumber,
       'admission_year': admisssionYear,

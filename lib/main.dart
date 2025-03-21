@@ -12,6 +12,7 @@ import 'package:parent_pro/teacher/controller/teacher_auth_controller.dart';
 import 'package:parent_pro/teacher/controller/teacher_controller.dart';
 import 'package:provider/provider.dart';
 
+import 'auth/controller/department_details_controller.dart';
 import 'auth/controller/fees_controller.dart';
 import 'auth/controller/student_assessment_controller.dart';
 import 'dashboard/attendance/controller/students_attendance_controller.dart';
@@ -65,6 +66,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => FeesController(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DepartmentDetailsController(),
         ),
       ],
       child: MaterialApp(

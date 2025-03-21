@@ -7,7 +7,7 @@ class Teacher {
   String? phone;
   String? photoUrl;
   bool isApproved;
-  List<Map<String, String>> assignedPeriods; // Store assigned periods
+  List<Map<String, dynamic>> assignedPeriods; // Store assigned periods
 
   Teacher({
     required this.id,
@@ -33,7 +33,7 @@ class Teacher {
       photoUrl: data['imageUrl'] ?? '',
       isApproved: data['isApproved'] ?? false,
       assignedPeriods: (data['assigned_periods'] as List<dynamic>?)
-              ?.map((e) => Map<String, String>.from(e as Map))
+              ?.map((e) => Map<String, dynamic>.from(e as Map))
               .toList() ??
           [],
     );

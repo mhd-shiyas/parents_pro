@@ -1,5 +1,9 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hugeicons/hugeicons.dart';
+import 'package:parent_pro/common/custom_appbar.dart';
+import 'package:parent_pro/constants/color_constants.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -41,19 +45,26 @@ class _AttendanceScreenState extends State<AttendanceScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Attendance"),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: [
-            Tab(text: "Hourly"),
-            Tab(text: "Subject"),
-            Tab(text: "Semester"),
-          ],
-        ),
-      ),
+      backgroundColor: Colors.white,
+      appBar: CustomAppbar(title: "Attendance"),
       body: Column(
         children: [
+          TabBar(
+            labelColor: ColorConstants.primaryColor,
+            indicatorColor: ColorConstants.primaryColor,
+            dividerColor: Colors.transparent,
+            padding: EdgeInsets.all(20).copyWith(top: 10),
+            labelStyle: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
+            controller: _tabController,
+            tabs: [
+              Tab(text: "Hourly"),
+              Tab(text: "Paper"),
+              Tab(text: "Semester"),
+            ],
+          ),
           _buildSemesterDropdown(),
           Expanded(
             child: TabBarView(
@@ -77,83 +88,138 @@ class _AttendanceScreenState extends State<AttendanceScreen>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text("Semester",
-              style: GoogleFonts.montserrat(
-                  fontSize: 16, fontWeight: FontWeight.bold)),
-          DropdownButton<int>(
-            value: selectedSemester,
-            items: List.generate(8, (index) => index + 1)
-                .map((sem) => DropdownMenuItem(
-                      value: sem,
-                      child: Text("Semester $sem"),
-                    ))
-                .toList(),
-            onChanged: (value) {
-              if (value != null) {
-                setState(() {
-                  selectedSemester = value;
-                  _fetchAvailableMonths();
-                });
-              }
-            },
+              style:
+                  GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold)),
+          Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  width: 1.5,
+                  color: ColorConstants.primaryColor,
+                )),
+            child: DropdownButton<int>(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              value: selectedSemester,
+              items: List.generate(8, (index) => index + 1)
+                  .map((sem) => DropdownMenuItem(
+                        value: sem,
+                        child: Text("Semester $sem"),
+                      ))
+                  .toList(),
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    selectedSemester = value;
+                    _fetchAvailableMonths();
+                  });
+                }
+              },
+            ),
           ),
         ],
       ),
     );
   }
 
- Widget _buildHourlyAttendance() {
-  return Column(
-    children: [
-      _buildMonthSelector(), // Month dropdown
-      Expanded(
-        child: FutureBuilder<List<Map<String, dynamic>>>(
-          future: Provider.of<StudentsAttendanceController>(context)
-              .getHourlyAttendance(widget.studentId, selectedSemester, selectedMonth),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
-            if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(child: Text("No Attendance Data Found"));
-            }
+  Widget _buildHourlyAttendance() {
+    return Column(
+      children: [
+        _buildMonthSelector(), // Month dropdown
+        Expanded(
+          child: FutureBuilder<List<Map<String, dynamic>>>(
+            future: Provider.of<StudentsAttendanceController>(context)
+                .getHourlyAttendance(
+                    widget.studentId, selectedSemester, selectedMonth),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return Center(child: Text("No Attendance Data Found"));
+              }
 
-            final attendanceList = snapshot.data!;
+              final attendanceList = snapshot.data!;
 
-            return ListView.builder(
-              itemCount: attendanceList.length,
-              itemBuilder: (context, index) {
-                final attendanceEntry = attendanceList[index];
-                final date = attendanceEntry['date']; // Day name + date
-                final periods = attendanceEntry['periods'] as Map<String, bool>;
+              return Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: ListView.builder(
+                  itemCount: attendanceList.length,
+                  itemBuilder: (context, index) {
+                    final attendanceEntry = attendanceList[index];
+                    final date = attendanceEntry['date']; // Day name + date
+                    final periods =
+                        attendanceEntry['periods'] as Map<String, bool>;
 
-                return ListTile(
-                  title: Text(date), // Now formatted with day name
-                  subtitle: Row(
-                    children: List.generate(5, (periodIndex) {
-                      String periodKey = "P${periodIndex + 1}";
-                      Color color = Colors.grey;
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          date,
+                          style: GoogleFonts.inter(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: List.generate(5, (periodIndex) {
+                            String periodKey = "P${periodIndex + 1}";
+                            Color color = Colors.grey.withOpacity(0.5);
 
-                      if (periods.containsKey(periodKey)) {
-                        color = periods[periodKey]! ? Colors.green : Colors.red;
-                      }
+                            if (periods.containsKey(periodKey)) {
+                              color = periods[periodKey]!
+                                  ? Colors.green
+                                  : Colors.red;
+                            }
 
-                      return Container(
-                        margin: EdgeInsets.symmetric(horizontal: 4),
-                        height: 20,
-                        width: 20,
-                        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                      );
-                    }),
-                  ),
-                );
-              },
-            );
-          },
+                            return Container(
+                              //  margin: EdgeInsets.symmetric(horizontal: 4),
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: color,
+                              ),
+                            );
+                          }),
+                        ),
+                      ],
+                    );
+                    // ListTile(
+                    //   title: Text(date), // Now formatted with day name
+                    //   subtitle: Row(
+                    //     children: List.generate(5, (periodIndex) {
+                    //       String periodKey = "P${periodIndex + 1}";
+                    //       Color color = Colors.grey;
+
+                    //       if (periods.containsKey(periodKey)) {
+                    //         color =
+                    //             periods[periodKey]! ? Colors.green : Colors.red;
+                    //       }
+
+                    //       return Container(
+                    //         margin: EdgeInsets.symmetric(horizontal: 4),
+                    //         height: 20,
+                    //         width: 20,
+                    //         decoration: BoxDecoration(
+                    //             color: color, shape: BoxShape.circle),
+                    //       );
+                    //     }),
+                    //   ),
+                    // );
+                  },
+                ),
+              );
+            },
+          ),
         ),
-      ),
-    ],
-  );
-}
+      ],
+    );
+  }
 
   Widget _buildMonthSelector() {
     return SingleChildScrollView(
@@ -168,13 +234,26 @@ class _AttendanceScreenState extends State<AttendanceScreen>
             },
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(
-                month,
-                style: TextStyle(
-                  fontWeight: selectedMonth == month
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                  color: selectedMonth == month ? Colors.black : Colors.grey,
+              child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                      width: 2,
+                      color: selectedMonth == month
+                          ? ColorConstants.primaryColor
+                          : Colors.grey.withOpacity(0.8)),
+                ),
+                child: Text(
+                  month,
+                  style: TextStyle(
+                    fontWeight: selectedMonth == month
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                    color: selectedMonth == month
+                        ? ColorConstants.primaryColor
+                        : Colors.grey.withOpacity(0.8),
+                  ),
                 ),
               ),
             ),
@@ -214,28 +293,41 @@ class _AttendanceScreenState extends State<AttendanceScreen>
             double attendancePercentage =
                 (totalHours > 0) ? (attendedHours / totalHours) * 100 : 0.0;
 
-            return Card(
+            return Container(
               margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(2, 3),
+                      blurRadius: 10,
+                      color: Colors.grey.withOpacity(0.2),
+                    )
+                  ]),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      subjectName,
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AutoSizeText(
+                          subjectName,
+                          style: GoogleFonts.inter(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 5),
+                        Text("Total Hours: $totalHours"),
+                        Text("Attended Hours: $attendedHours"),
+                      ],
                     ),
-                    SizedBox(height: 5),
-                    Text("Total Hours: $totalHours"),
-                    Text("Attended Hours: $attendedHours"),
-                    SizedBox(height: 10),
+                    // SizedBox(height: 10),
                     CircularPercentIndicator(
-                      radius: 50.0,
-                      lineWidth: 5.0,
+                      animation: true,
+                      radius: 35.0,
+                      lineWidth: 8.0,
                       percent: (attendancePercentage / 100).clamp(0.0, 1.0),
                       center:
                           Text("${attendancePercentage.toStringAsFixed(1)}%"),
@@ -273,50 +365,85 @@ class _AttendanceScreenState extends State<AttendanceScreen>
             int attendedHours = data["attendedHours"];
             double percentage = data["percentage"];
 
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Semester Attendance",
-                  style: GoogleFonts.montserrat(
-                      fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 20),
-                CircularPercentIndicator(
-                  radius: 80.0,
-                  lineWidth: 8.0,
-                  percent: percentage / 100,
-                  center: Text("${percentage.toStringAsFixed(1)}%"),
-                  progressColor: percentage < 75 ? Colors.red : Colors.green,
-                ),
-                SizedBox(height: 16),
-                Text(
-                  "Total Hours: $totalHours",
-                  style: GoogleFonts.montserrat(
-                      fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-                Text(
-                  "Attended Hours: $attendedHours",
-                  style: GoogleFonts.montserrat(
-                      fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-                SizedBox(height: 20),
-                if (percentage < 75)
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
+            return Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        offset: Offset(2, 3),
+                        blurRadius: 10,
+                        color: Colors.grey.withOpacity(0.2),
+                      )
+                    ]),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Semester Attendance",
+                              style: GoogleFonts.inter(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              "Total Hours: $totalHours",
+                              style: GoogleFonts.inter(
+                                  fontSize: 16, fontWeight: FontWeight.w600),
+                            ),
+                            Text(
+                              "Attended Hours: $attendedHours",
+                              style: GoogleFonts.inter(
+                                  fontSize: 16, fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                        CircularPercentIndicator(
+                          animation: true,
+                          radius: 50.0,
+                          lineWidth: 12.0,
+                          percent: percentage / 100,
+                          center: Text("${percentage.toStringAsFixed(1)}%"),
+                          progressColor:
+                              percentage < 75 ? Colors.red : Colors.green,
+                        ),
+                      ],
                     ),
-                    child: Text(
-                      "⚠️ Your child's attendance is below 75%",
-                      style: GoogleFonts.montserrat(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red),
-                    ),
-                  ),
-              ],
+                    SizedBox(height: 16),
+                    if (percentage < 75)
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            HugeIcon(
+                                icon: HugeIcons.strokeRoundedAlertCircle,
+                                color: Colors.red),
+                            SizedBox(width: 8),
+                            Text(
+                              "Your child's attendance is below 75%",
+                              style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              ),
             );
           },
         );
