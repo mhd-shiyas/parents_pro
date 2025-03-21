@@ -45,3 +45,6 @@ app.*.map.json
 /android/app/release
 /lib/firebase_options.dart
 /android/app/google-services.json
+/android/app/proguard-rules.pro
+/android/app/.cxx/RelWithDebInfo/321g6j22
+pubspec.lock
