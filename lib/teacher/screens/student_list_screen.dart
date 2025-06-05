@@ -120,10 +120,10 @@ class _StudentListScreenState extends State<StudentListScreen> {
                             ),
                           ),
                           Expanded(
-                            child: ListView.separated(
-                              separatorBuilder: (context, index) => SizedBox(
-                                height: 12,
-                              ),
+                            child: ListView.builder(
+                              // separatorBuilder: (context, index) => SizedBox(
+                              //   height: 12,
+                              // ),
                               itemCount: students.length,
                               itemBuilder: (context, index) {
                                 final student = students[index];

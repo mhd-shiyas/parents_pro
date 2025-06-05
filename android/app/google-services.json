@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "241497344665",
+    "project_id": "teachat2021",
+    "storage_bucket": "teachat2021.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:241497344665:android:a7ab64175dd5b7a8594608",
+        "android_client_info": {
+          "package_name": "com.example.parent_pro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "241497344665-butfois43unn9io84mu4aeo641r5d29g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbg-zZK-q_LytQHY04nhzLMQZWZZ-50nY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "241497344665-butfois43unn9io84mu4aeo641r5d29g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
